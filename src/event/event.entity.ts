@@ -9,10 +9,13 @@ export class Event {
 
   @Column()
   title!: string;
-  
+
   @Column()
   location!: string;
 
   @Column()
   date!: Date;
+
+  @Column()
+  userId!: number;
 }
