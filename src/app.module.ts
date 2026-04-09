@@ -17,7 +17,7 @@ import { UserModule } from './user/user.module';
       username: 'root',
       password: '',
       database: 'ticketing',
-      entities: [Event],
+      autoLoadEntities: true,
       synchronize: true,
 }),
     EventModule,
