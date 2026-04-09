@@ -13,7 +13,7 @@ import { Like } from 'typeorm';
 export class EventService {
     @InjectRepository(Event)
     private eventRepository!: Repository<Event>;
-    
+
     /**   * Creates a new event and adds it to the in-memory list.
        * @param data - The event data to create.
        * @returns The newly created event.
@@ -90,41 +90,39 @@ export class EventService {
      */
     // src/event/event.service.ts
 
-    async getEvents(filter?: string, page?: string, limit?: string, search?: string) {
-        // 1. Start with a copy of all events
-        let result = await this.eventRepository.find();
-        const now = new Date();
-
-        // 2. APPLY FILTERS (Modify the 'result' array, don't return yet!)
+    async getEvents(page?: string, limit?: string, search?: string) {
+        const query = this.eventRepository.createQueryBuilder('event');
         if (search) {
-            return this.eventRepository.find({
-                where: [
-                    { title: Like(`%${search}%`) },
-                    { location: Like(`%${search}%`) }
-                ]
+            const { start, end } = getDateRange(search);
+
+            query.andWhere('event.date BETWEEN :start AND :end', {
+                start,
+                end,
             });
         }
-        // 3. APPLY SEARCH (Works on top of the filtered result)
+        // ✅ SEARCH
         if (search) {
-            const keyword = search.toLowerCase();
-            result = result.filter((e: Event) =>
-                (e.title?.toLowerCase().includes(keyword) ?? false) ||
-                (e.location?.toLowerCase().includes(keyword) ?? false)
+            query.andWhere(
+                '(event.title LIKE :search OR event.location LIKE :search)',
+                { search: `%${search}%` }
             );
         }
-        // 4. APPLY PAGINATION (Always do this last!)
-        const pageNum = Number(page) || 1;
+
+        // ✅ PAGINATION
+        const pageNum = Math.max(1, Number(page) || 1);
         const limitNum = Number(limit) || 5;
 
-        const startIndex = (pageNum - 1) * limitNum;
-        const paginatedData = result.slice(startIndex, startIndex + limitNum);
+        query.skip((pageNum - 1) * limitNum);
+        query.take(limitNum);
 
-        // 5. RETURN THE FINAL SHAPE
+        // ✅ EXECUTE
+        const [data, total] = await query.getManyAndCount();
+
         return {
-            total: result.length,
+            total,
             page: pageNum,
             limit: limitNum,
-            data: paginatedData,
+            data,
         };
     }
 }

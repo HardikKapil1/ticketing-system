@@ -4,7 +4,6 @@ import { Controller, Post, Body, Get, Param, Delete, Patch, Query } from '@nestj
 import { EventService } from './event.service';
 import { Event } from './event.entity';
 import { UpdateEventDto } from './event.dto';
-import { Filter } from 'typeorm';
 import { FilterType } from './event.enum';
 
 @Controller('event')
@@ -37,11 +36,10 @@ export class EventController {
 
     @Get()
     getAll(
-        @Query('filter') filter?: FilterType,
         @Query('page') page?: string,
         @Query('limit') limit?: string,
         @Query('search') search?: string,
     ) {
-        return this.eventService.getEvents(filter, page, limit, search);
+        return this.eventService.getEvents(page, limit, search);
     }
 }
