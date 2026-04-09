@@ -1,3 +1,4 @@
+import { Filter } from 'typeorm';
 // src/event/event.service.ts
 
 import { Injectable } from '@nestjs/common';
@@ -7,7 +8,7 @@ import { NotFoundException } from '@nestjs/common';
 import { getDateRange } from '../utils/date-utils';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Like } from 'typeorm';
+import { FilterType } from './event.enum';
 
 @Injectable()
 export class EventService {
@@ -88,12 +89,13 @@ export class EventService {
      * @param search 
     * @returns A list of events based on the provided criteria.
      */
-    // src/event/event.service.ts
-
-    async getEvents(page?: string, limit?: string, search?: string) {
+    async getEvents(filter?: FilterType, page?: string, limit?: string, search?: string) {
         const query = this.eventRepository.createQueryBuilder('event');
-        if (search) {
-            const { start, end } = getDateRange(search);
+        if (filter && !Object.values(FilterType).includes(filter as FilterType)) {
+  throw new BadRequestException('Invalid filter');
+}
+        if (filter) {
+            const { start, end } = getDateRange(filter);
 
             query.andWhere('event.date BETWEEN :start AND :end', {
                 start,
@@ -101,6 +103,7 @@ export class EventService {
             });
         }
         // ✅ SEARCH
+
         if (search) {
             query.andWhere(
                 '(event.title LIKE :search OR event.location LIKE :search)',
@@ -110,10 +113,10 @@ export class EventService {
 
         // ✅ PAGINATION
         const pageNum = Math.max(1, Number(page) || 1);
-        const limitNum = Number(limit) || 5;
-
+        const limitNum = Math.min(Number(limit) || 5, 50);
         query.skip((pageNum - 1) * limitNum);
         query.take(limitNum);
+        query.orderBy('event.date', 'DESC');
 
         // ✅ EXECUTE
         const [data, total] = await query.getManyAndCount();

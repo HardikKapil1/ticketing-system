@@ -5,12 +5,16 @@ import { ApiBody } from '@nestjs/swagger';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+    constructor(private readonly userService: UserService) { }
 
-  @ApiBody({ type: RegisterDto })
-  @Post('register')
+    @ApiBody({ type: RegisterDto })
+    @Post('register')
 
-  register(@Body() body: RegisterDto) {
-    return this.userService.register(body.email, body.password);
-  }
+    register(@Body() body: RegisterDto) {
+        return this.userService.register(body.email, body.password);
+    }
+    @Post('login')
+    login(@Body() body: RegisterDto) {
+        return this.userService.login(body.email, body.password);
+    }
 }
