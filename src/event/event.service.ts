@@ -4,26 +4,29 @@ import { Injectable } from '@nestjs/common';
 import { Event } from './event.entity';
 import { BadRequestException } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
-import { FilterType } from './event.enum';
+import { getDateRange } from '../utils/date-utils';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Like } from 'typeorm';
 
 @Injectable()
 export class EventService {
-    private events: Event[] = [];
+    @InjectRepository(Event)
+    private eventRepository!: Repository<Event>;
+    
     /**   * Creates a new event and adds it to the in-memory list.
        * @param data - The event data to create.
        * @returns The newly created event.
        * @throws BadRequestException if the event title is missing.
     */
-    private idCounter = 1;
-    createEvent(data: Event) {
+    async createEvent(data: Event) {
         if (!data.title) {
             throw new BadRequestException('Event title is required');
         }
         const newEvent = {
             ...data,
-            id: this.idCounter++,
         };
-        this.events.push(newEvent);
+        await this.eventRepository.save(newEvent);
         return newEvent;
     }
     /**
@@ -31,13 +34,13 @@ export class EventService {
      * @param id 
      * @returns The event with the specified ID, or throws an error if not found.
      */
-    getEventById(id: number) {
-        const event = this.events.find((e) => e.id === id);
+    async getEventById(id: number) {
+        const event = await this.eventRepository.findOne({ where: { id } });
         if (!event) {
             throw new NotFoundException(`Event with id ${id} not found`);
         }
         console.log("Requested ID:", id);
-        console.log("All events:", this.events);
+        console.log("All events:", await this.eventRepository.find());
         return event;
     }
     /**
@@ -45,14 +48,14 @@ export class EventService {
      * @param id 
      * @returns A confirmation message.
      */
-    deleteEvent(id: number) {
-        const index = this.events.findIndex(e => e.id === id);
+    async deleteEvent(id: number) {
+        const event = await this.eventRepository.findOne({ where: { id } });
 
-        if (index === -1) {
+        if (!event) {
             throw new NotFoundException(`Event with id ${id} not found`);
         }
 
-        this.events.splice(index, 1);
+        await this.eventRepository.remove(event);
 
         return { message: 'Event deleted' };
     }
@@ -62,8 +65,8 @@ export class EventService {
      * @param data 
      * @returns The updated event.
      */
-    updateEvent(id: number, data: Partial<Event>) {
-        const event = this.events.find(e => e.id === id);
+    async updateEvent(id: number, data: Partial<Event>) {
+        const event = await this.eventRepository.findOne({ where: { id } });
 
         if (!event) {
             throw new NotFoundException(`Event with id ${id} not found`);
@@ -74,6 +77,7 @@ export class EventService {
         }
 
         Object.assign(event, data);
+        await this.eventRepository.save(event);
         return event;
     }
     /**
@@ -86,34 +90,18 @@ export class EventService {
      */
     // src/event/event.service.ts
 
-    getEvents(filter?: string, page?: string, limit?: string, search?: string) {
+    async getEvents(filter?: string, page?: string, limit?: string, search?: string) {
         // 1. Start with a copy of all events
-        let result = [...this.events];
+        let result = await this.eventRepository.find();
         const now = new Date();
 
         // 2. APPLY FILTERS (Modify the 'result' array, don't return yet!)
-        if (filter === FilterType.TODAY) {
-            const startOfDay = new Date();
-            startOfDay.setHours(0, 0, 0, 0);
-            const endOfDay = new Date();
-            endOfDay.setHours(23, 59, 59, 999);
-
-            result = result.filter(event => {
-                if (!event.date) return false;
-                const eventDate = new Date(event.date);
-                return eventDate >= startOfDay && eventDate <= endOfDay;
-            });
-        }
-
-        if (filter === FilterType.WEEK) {
-            const start = new Date();
-            start.setDate(now.getDate() - 7);
-            start.setHours(0, 0, 0, 0);
-
-            result = result.filter(event => {
-                if (!event.date) return false;
-                const eventDate = new Date(event.date);
-                return eventDate >= start && eventDate <= now;
+        if (search) {
+            return this.eventRepository.find({
+                where: [
+                    { title: Like(`%${search}%`) },
+                    { location: Like(`%${search}%`) }
+                ]
             });
         }
         // 3. APPLY SEARCH (Works on top of the filtered result)

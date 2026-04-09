@@ -5,14 +5,14 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @Entity()
 export class Event {
   @PrimaryGeneratedColumn()
-  id: number | undefined;
+  id!: number;
 
   @Column()
-  title: string | undefined;
+  title!: string;
+  
+  @Column()
+  location!: string;
 
   @Column()
-  location: string | undefined;
-
-  @Column()
-  date: Date | undefined;
+  date!: Date;
 }
