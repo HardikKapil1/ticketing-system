@@ -14,3 +14,10 @@ export class RegisterDto {
   })
   password!: string;
 }
+export class LoginDto {
+  @ApiProperty({ example: 'hardik@gmail.com' })
+  email!: string;
+
+  @ApiProperty({ example: '123456' })
+  password!: string;
+}
