@@ -12,9 +12,9 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-
 import { EventService } from './event.service';
 import { Event } from './event.entity';
+import { CreateEventDto } from './event.dto';
 import { UpdateEventDto } from './event.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
@@ -34,7 +34,7 @@ export class EventController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
-  create(@Body() body: Event, @Req() req: { user: JwtUser }) {
+  create(@Body() body:CreateEventDto, @Req() req: { user: JwtUser }) {
     return this.eventService.createEvent(
       {
         ...body,

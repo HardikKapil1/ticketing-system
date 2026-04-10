@@ -107,12 +107,6 @@ export class EventService {
     ) {
         const query = this.eventRepository.createQueryBuilder('event');
 
-        if (user.role !== Role.ADMIN) {
-            query.andWhere('event.userId = :userId', {
-                userId: user.userId,
-            });
-        }
-
         if (filter && !Object.values(FilterType).includes(filter as FilterType)) {
             throw new BadRequestException('Invalid filter');
         }
