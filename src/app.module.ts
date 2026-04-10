@@ -20,7 +20,7 @@ import { TicketModule } from './ticket/ticket.module';
       database: 'ticketing',
       autoLoadEntities: true,
       synchronize: true,
-}),
+    }),
     EventModule,
     UserModule,
     AuthModule,

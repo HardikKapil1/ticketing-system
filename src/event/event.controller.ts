@@ -24,7 +24,6 @@ import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from '../common/enums/role.enum';
 import { JwtUser } from 'src/common/interfaces/jwt-user.inteface';
 
-
 @Controller('event')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
@@ -34,15 +33,12 @@ export class EventController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
-  create(@Body() body:CreateEventDto, @Req() req: { user: JwtUser }) {
-    return this.eventService.createEvent(
-      {
-        ...body,
-        userId: req.user.userId, // 👈 attach owner
-      } as Event,
-    );
+  create(@Body() body: CreateEventDto, @Req() req: { user: JwtUser }) {
+    return this.eventService.createEvent({
+      ...body,
+      userId: req.user.userId, // 👈 attach owner
+    } as Event);
   }
-
 
   // 🔐 AUTHENTICATED USERS
   @ApiBearerAuth('access-token')
@@ -59,13 +55,7 @@ export class EventController {
     @Query('limit') limit?: string,
     @Query('search') search?: string,
   ) {
-    return this.eventService.getEvents(
-      req.user,
-      filter,
-      page,
-      limit,
-      search,
-    );
+    return this.eventService.getEvents(req.user, filter, page, limit, search);
   }
 
   // 🔐 AUTHENTICATED USERS
@@ -81,10 +71,7 @@ export class EventController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
   @Delete(':id')
-  delete(
-    @Param('id') id: string,
-    @Req() req: { user: JwtUser },
-  ) {
+  delete(@Param('id') id: string, @Req() req: { user: JwtUser }) {
     return this.eventService.deleteEvent(Number(id), req.user);
   }
 

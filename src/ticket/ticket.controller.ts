@@ -8,13 +8,14 @@ import { BookTicketDto } from './ticket.dto';
 @ApiBearerAuth('access-token')
 @Controller('ticket')
 export class TicketController {
-    constructor(private readonly ticketService: TicketService) {}
-    @UseGuards(AuthGuard('jwt'))
-    @Post()
-    async bookTicket(
-        @Request() req,
-        @Body() ticketData: BookTicketDto,
-    ) {
-        return this.ticketService.bookTicket(req.user.userId, ticketData.eventId, ticketData.seatNumber);
-    }
+  constructor(private readonly ticketService: TicketService) {}
+  @UseGuards(AuthGuard('jwt'))
+  @Post()
+  async bookTicket(@Request() req, @Body() ticketData: BookTicketDto) {
+    return this.ticketService.bookTicket(
+      req.user.userId,
+      ticketData.eventId,
+      ticketData.seatNumber,
+    );
+  }
 }

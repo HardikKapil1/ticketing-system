@@ -12,6 +12,6 @@ export const getDateRange = (filter: string) => {
     start.setDate(now.getDate() - 7);
     start.setHours(0, 0, 0, 0);
   }
-  
+
   return { start, end };
 };

@@ -5,24 +5,32 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class TicketService {
-    @InjectRepository(Ticket)
-    private ticketRepository!: Repository<Ticket>;
+  @InjectRepository(Ticket)
+  private ticketRepository!: Repository<Ticket>;
 
-    /**
-     * Books a new ticket for a user for a specific event and seat number.
-     * @param userId 
-     * @param eventId 
-     * @param seatNumber 
-     * @returns 
-     */
-    async bookTicket(userId: number, eventId: number, seatNumber: string) {
-        const newTicket = this.ticketRepository.create({
-            bookingDate: new Date(),
-            seatNumber,
-            userId,
-            eventId,
-        });
-        await this.ticketRepository.save(newTicket);
-        return newTicket;
-    }
+  /**
+   * Books a new ticket for a user for a specific event and seat number.
+   * @param userId
+   * @param eventId
+   * @param seatNumber
+   * @returns
+   */
+  async bookTicket(userId: number, eventId: number, seatNumber: string) {
+    const newTicket = this.ticketRepository.create({
+      bookingDate: new Date(),
+      seatNumber,
+      userId,
+      eventId,
+    });
+    await this.ticketRepository.save(newTicket);
+    return newTicket;
+  }
+  /**
+   * Retrieves all tickets for a specific user.
+   * @param userId
+   * @returns Promise<Ticket[]>
+   */
+  async getTicketsForUser(userId: number) {
+    return this.ticketRepository.find({ where: { userId } });
+  }
 }

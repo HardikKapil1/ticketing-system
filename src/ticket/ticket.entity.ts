@@ -1,19 +1,19 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Ticket {
-    @PrimaryGeneratedColumn()
-    id!: number;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    @Column()
-    bookingDate!: Date;
+  @Column()
+  bookingDate!: Date;
 
-    @Column()
-    seatNumber!: string;
+  @Column()
+  seatNumber!: string;
 
-    @Column()
-    userId!: number;
+  @Column()
+  userId!: number;
 
-    @Column()
-    eventId!: number;
+  @Column()
+  eventId!: number;
 }
