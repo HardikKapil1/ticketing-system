@@ -21,7 +21,7 @@ const Register = () => {
       const token = response.data.access_token;
       localStorage.setItem("token", token);
       console.log(response.data);
-      navigate("/dashboard");
+      navigate("/login");
     } catch (submitError) {
       console.error("Registration failed:", submitError);
       setError("Registration failed. Please verify your details and try again.");
