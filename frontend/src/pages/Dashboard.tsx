@@ -11,25 +11,33 @@ interface JwtPayload {
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-  const decoded = token ? jwtDecode<JwtPayload>(token) : null;
 
   useEffect(() => {
-    if (!token || !decoded) {
-      navigate("/login");
-      return;
+  try {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      navigate('/login')
+      return
     }
+    const decoded = jwtDecode<JwtPayload>(token)
     if (decoded.exp * 1000 < Date.now()) {
-      localStorage.removeItem("token");
-      navigate("/login");
-      return;
+      localStorage.removeItem('token')
+      navigate('/login')
+      return
     }
-    if (decoded.role === "ADMIN") {
-      navigate("/admin");
+    if (decoded.role === 'ADMIN') {
+      navigate('/admin')
     } else {
-      navigate("/user");
+      navigate('/user')
     }
-  }, []);
+  } catch (error) {
+    // invalid token — clear and redirect
+    console.error('Invalid token:', error);
+    localStorage.removeItem('token')
+    localStorage.removeItem('refresh_token')
+    navigate('/login')
+  }
+}, [])
 
   return null;
 };
