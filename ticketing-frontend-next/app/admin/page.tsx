@@ -122,7 +122,7 @@ useEffect(() => {
   }
   
   loadData()
-}, [])
+}, [router])
 
   return (
     <main className="app-shell">
@@ -132,8 +132,8 @@ useEffect(() => {
             <p className="text-xs uppercase tracking-[0.18em] text-sky-300">
               Admin Console
             </p>
-            <h1 className="page-title">Events Dashboard</h1>
-            <p className="page-subtitle">
+            <h1 className="page-title mt-3">Events Dashboard</h1>
+            <p className="page-subtitle mt-3 max-w-2xl">
               Create, review, and manage all published events.
             </p>
           </div>
@@ -215,14 +215,14 @@ useEffect(() => {
           <section className="surface p-5">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="section-heading">Event List</h2>
-              <span className="rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1 text-xs text-blue-200">
+              <span className="status-pill">
                 {event.length} records
               </span>
             </div>
 
             <div className="space-y-3">
               {event.length === 0 && (
-                <p className="rounded-lg border border-dashed border-slate-500/40 bg-slate-900/40 px-4 py-5 text-sm text-[var(--text-secondary)]">
+                <p className="empty-state">
                   No events available yet. Create your first event from the
                   form.
                 </p>
@@ -231,7 +231,7 @@ useEffect(() => {
               {event.map((e: Event) => (
                 <article
                   key={e.id}
-                  className="rounded-lg border border-slate-600/40 bg-slate-900/50 p-4"
+                  className="data-card"
                 >
                   <h3 className="text-lg font-semibold">{e.title}</h3>
                   <p className="mt-1 text-sm text-[var(--text-secondary)]">
@@ -256,7 +256,7 @@ useEffect(() => {
           <h2 className="section-heading">All Booked Tickets</h2>
           <div className="mt-4 space-y-3">
             {tickets.length === 0 && (
-              <p className="rounded-lg border border-dashed border-slate-500/40 bg-slate-900/40 px-4 py-5 text-sm text-[var(--text-secondary)]">
+              <p className="empty-state">
                 No tickets booked yet.
               </p>
             )}
@@ -264,7 +264,7 @@ useEffect(() => {
             {tickets.map((ticket: Ticket) => (
               <article
                 key={ticket.id}
-                className="rounded-lg border border-slate-600/40 bg-slate-900/50 p-4"
+                className="data-card"
               >
                 <h3 className="text-lg font-semibold">
                   Ticket ID: {ticket.id} - Event ID: {ticket.eventId}

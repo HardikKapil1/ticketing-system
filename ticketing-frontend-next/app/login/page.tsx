@@ -30,65 +30,81 @@ const LoginPage = () => {
   return (
     <main className="app-shell flex items-center justify-center">
       <section className="glass-panel w-full max-w-5xl overflow-hidden">
-        <div className="grid md:grid-cols-2">
-          <div className="hidden border-r border-[var(--border-soft)] bg-gradient-to-br from-blue-500/20 via-sky-500/5 to-transparent p-8 md:block">
-            <p className="text-xs uppercase tracking-[0.2em] text-blue-300">
-              TicketOps
-            </p>
-            <h1 className="mt-4 text-4xl font-semibold leading-tight">
-              Professional ticketing operations, all in one dashboard.
-            </h1>
-            <p className="page-subtitle">
-              Monitor events, manage bookings, and stay in control with a clean
-              operational view.
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="p-6 md:p-10">
-            <h2 className="page-title text-2xl">Sign in</h2>
-            <p className="page-subtitle">Welcome back. Enter your credentials.</p>
-
-            <div className="mt-8 space-y-4">
-              <div>
-                <label className="field-label">Email</label>
-                <input
-                  type="email"
-                  placeholder="name@company.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="input-dark"
-                  required
-                />
-              </div>
-              <div>
-                <label className="field-label">Password</label>
-                <input
-                  type="password"
-                  placeholder="Enter password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="input-dark"
-                  required
-                />
-              </div>
+        <div className="auth-grid">
+          <div className="auth-showcase hidden md:flex">
+            <div className="auth-copy">
+              <p className="auth-eyebrow">
+                TicketOps
+              </p>
+              <h1 className="mt-6 text-4xl font-semibold leading-tight lg:text-5xl">
+                Professional ticketing operations, all in one dashboard.
+              </h1>
+              <p className="page-subtitle mt-5 max-w-md">
+                Monitor events, manage bookings, and stay in control with a clean
+                operational view.
+              </p>
             </div>
 
-            {error && (
-              <p className="mt-4 rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-200">
-                {error}
+            <div className="auth-kicker">
+              <div>
+                <p className="text-sm font-semibold text-white">Unified control</p>
+                <p className="mt-2">Track events, users, and bookings from one workspace.</p>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white">Live operations</p>
+                <p className="mt-2">Keep admins and users aligned with a clear ticket flow.</p>
+              </div>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="auth-form-panel">
+            <div className="auth-form-shell">
+              <p className="auth-eyebrow md:hidden">TicketOps</p>
+              <h2 className="page-title mt-3 text-2xl">Sign in</h2>
+              <p className="page-subtitle mt-3">Welcome back. Enter your credentials.</p>
+
+              <div className="mt-8 space-y-5">
+                <div>
+                  <label className="field-label">Email</label>
+                  <input
+                    type="email"
+                    placeholder="name@company.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="input-dark"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="field-label">Password</label>
+                  <input
+                    type="password"
+                    placeholder="Enter password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="input-dark"
+                    required
+                  />
+                </div>
+              </div>
+
+              {error && (
+                <p className="mt-4 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                  {error}
+                </p>
+              )}
+
+              <button type="submit" className="btn-primary mt-7 w-full">
+                Sign in
+              </button>
+
+              <p className="mt-6 text-sm text-[var(--text-secondary)]">
+                No account yet?{" "}
+                <Link href="/register" className="font-semibold text-blue-300 transition hover:text-blue-200">
+                  Create one
+                </Link>
               </p>
-            )}
-
-            <button type="submit" className="btn-primary mt-6 w-full">
-              Sign in
-            </button>
-
-            <p className="mt-5 text-sm text-[var(--text-secondary)]">
-              No account yet?{" "}
-              <Link href="/register" className="font-semibold text-blue-300">
-                Create one
-              </Link>
-            </p>
+            </div>
           </form>
         </div>
       </section>

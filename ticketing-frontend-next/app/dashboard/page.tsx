@@ -25,7 +25,7 @@ export default function DashboardPage() {
     } else {
       router.push('/user')
     }
-  }, [])
+  }, [router])
 
   return null
 }

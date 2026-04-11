@@ -79,8 +79,8 @@ const UserDashboard = () => {
             <p className="text-xs uppercase tracking-[0.18em] text-blue-300">
               User Workspace
             </p>
-            <h1 className="page-title">Ticket Dashboard</h1>
-            <p className="page-subtitle">
+            <h1 className="page-title mt-3">Ticket Dashboard</h1>
+            <p className="page-subtitle mt-3 max-w-2xl">
               Browse active events and manage all your bookings.
             </p>
           </div>
@@ -113,7 +113,7 @@ const UserDashboard = () => {
 
             <div className="mt-4 space-y-4">
               {events.length === 0 && (
-                <p className="rounded-lg border border-dashed border-slate-500/40 bg-slate-900/40 px-4 py-5 text-sm text-[var(--text-secondary)]">
+                <p className="empty-state">
                   No events are currently available.
                 </p>
               )}
@@ -121,7 +121,7 @@ const UserDashboard = () => {
               {events.map((event) => (
                 <article
                   key={event.id}
-                  className="rounded-lg border border-slate-600/40 bg-slate-900/45 p-4"
+                  className="data-card"
                 >
                   <h3 className="text-lg font-semibold">{event.title}</h3>
                   <p className="mt-1 text-sm text-[var(--text-secondary)]">
@@ -164,7 +164,7 @@ const UserDashboard = () => {
 
             <div className="mt-4 space-y-3">
               {tickets.length === 0 && (
-                <p className="rounded-lg border border-dashed border-slate-500/40 bg-slate-900/40 px-4 py-5 text-sm text-[var(--text-secondary)]">
+                <p className="empty-state">
                   You do not have any bookings yet.
                 </p>
               )}
@@ -172,7 +172,7 @@ const UserDashboard = () => {
               {tickets.map((ticket) => (
                 <article
                   key={ticket.id}
-                  className="rounded-lg border border-slate-600/40 bg-slate-900/45 p-4"
+                  className="data-card"
                 >
                   <p className="text-sm text-[var(--text-secondary)]">
                     Event ID:{" "}
