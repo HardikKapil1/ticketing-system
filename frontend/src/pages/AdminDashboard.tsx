@@ -17,6 +17,14 @@ interface Event {
   date: Date;
 }
 
+interface Ticket {
+  id: number;
+  userId: number;
+  eventId: number;
+  seatNumber: string;
+  bookingDate: Date;
+}
+
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -25,7 +33,10 @@ const AdminDashboard = () => {
   const [title, setTitle] = useState("");
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
-
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  /**
+   * Handles the creation of a new event by sending a POST request to the backend API with the event details. After successful creation, it clears the form fields and refreshes the event list.
+   */
   async function handleCreate() {
     try {
       await axios.post(
@@ -81,9 +92,8 @@ const AdminDashboard = () => {
       fetchData();
     }
     if (decoded?.role !== "ADMIN") {
-      navigate("/user");
-    } else {
       console.warn("User is not an admin");
+      navigate("/user");
     }
   }, []);
 
@@ -92,6 +102,22 @@ const AdminDashboard = () => {
     localStorage.removeItem("refresh_token");
     navigate("/login");
   }
+
+  useEffect(() => {
+    async function fetchTickets() {
+      try {
+        const response = await axios.get("/ticket/admin", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setTickets(response.data);
+      } catch (error) {
+        console.error("Failed to fetch tickets:", error);
+      }
+    }
+    fetchTickets();
+  }, []);
 
   return (
     <main className="app-shell">
@@ -135,7 +161,9 @@ const AdminDashboard = () => {
             className="surface p-5"
           >
             <h2 className="section-heading">Create New Event</h2>
-            <p className="page-subtitle mt-1">Add details for upcoming events.</p>
+            <p className="page-subtitle mt-1">
+              Add details for upcoming events.
+            </p>
 
             <div className="mt-5 space-y-4">
               <div>
@@ -190,7 +218,8 @@ const AdminDashboard = () => {
             <div className="space-y-3">
               {event.length === 0 && (
                 <p className="rounded-lg border border-dashed border-slate-500/40 bg-slate-900/40 px-4 py-5 text-sm text-[var(--text-secondary)]">
-                  No events available yet. Create your first event from the form.
+                  No events available yet. Create your first event from the
+                  form.
                 </p>
               )}
 
@@ -217,6 +246,33 @@ const AdminDashboard = () => {
               ))}
             </div>
           </section>
+        </section>
+        <section className="surface p-5">
+          <h2 className="section-heading">All Booked Tickets</h2>
+          <div className="mt-4 space-y-3">
+            {tickets.length === 0 && (
+              <p className="rounded-lg border border-dashed border-slate-500/40 bg-slate-900/40 px-4 py-5 text-sm text-[var(--text-secondary)]">
+                No tickets booked yet.
+              </p>
+            )}
+
+            {tickets.map((ticket: Ticket) => (
+              <article
+                key={ticket.id}
+                className="rounded-lg border border-slate-600/40 bg-slate-900/50 p-4"
+              >
+                <h3 className="text-lg font-semibold">
+                  Ticket ID: {ticket.id} - Event ID: {ticket.eventId}
+                </h3>
+                <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                  User ID: {ticket.userId} | Seat: {ticket.seatNumber}
+                </p>
+                <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                  Booked on: {new Date(ticket.bookingDate).toLocaleString()}
+                </p>
+              </article>
+            ))}
+          </div>
         </section>
       </div>
     </main>
