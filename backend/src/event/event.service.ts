@@ -1,6 +1,6 @@
 // src/event/event.service.ts
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Event } from './event.entity';
 import { BadRequestException, Req, ForbiddenException } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
@@ -10,9 +10,14 @@ import { Repository } from 'typeorm';
 import { FilterType } from '../common/enums/event.enum';
 import { Role } from 'src/common/enums/role.enum';
 import { JwtUser } from 'src/common/interfaces/jwt-user.inteface';
+import Redis from 'ioredis';
+
 
 @Injectable()
 export class EventService {
+  @Inject('REDIS_CLIENT')
+  private readonly redisClient!: Redis;
+
   @InjectRepository(Event)
   private eventRepository!: Repository<Event>;
 
@@ -28,6 +33,10 @@ export class EventService {
     const newEvent = {
       ...data,
     };
+    const keys =await this.redisClient.keys( 'events:*');
+    if(keys.length > 0) {
+      await this.redisClient.del(keys);
+    }
     await this.eventRepository.save(newEvent);
     return newEvent;
   }
@@ -62,6 +71,10 @@ export class EventService {
     }
 
     await this.eventRepository.remove(event);
+    const keys =await this.redisClient.keys( 'events:*');
+    if(keys.length > 0) {
+      await this.redisClient.del(keys);
+    }
 
     return { message: 'Event deleted' };
   }
@@ -73,23 +86,28 @@ export class EventService {
    */
   async updateEvent(id: number, data: Partial<Event>, user: JwtUser) {
     const event = await this.eventRepository.findOne({ where: { id } });
-
+    
     if (!event) {
       throw new NotFoundException(`Event with id ${id} not found`);
     }
-
+    
     if (user.role !== Role.ADMIN && event.userId !== user.userId) {
       throw new ForbiddenException('Not allowed to update this event');
     }
-
+    
     if (data.title !== undefined && data.title.trim() === '') {
       throw new BadRequestException('Title cannot be empty');
     }
-
+    
     Object.assign(event, data);
     await this.eventRepository.save(event);
+    const keys =await this.redisClient.keys( 'events:*');
+    if(keys.length > 0) {
+      await this.redisClient.del(keys);
+    }
     return event;
   }
+
   /**
    * Retrieves all events with optional filtering, searching, and pagination.
    * @param filter
@@ -99,12 +117,17 @@ export class EventService {
    * @returns A list of events based on the provided criteria.
    */
   async getEvents(
-    user: JwtUser,
+    userId:JwtUser,
     filter?: FilterType,
     page?: string,
     limit?: string,
     search?: string,
   ) {
+    const cacheKey = `events:${filter || 'all'}:${search || 'none'}:${page || '1'}:${limit || '5'}`;
+    const cached = await this.redisClient.get(cacheKey);
+    if (cached) {
+      return JSON.parse(cached);
+    }
     const query = this.eventRepository.createQueryBuilder('event');
 
     if (filter && !Object.values(FilterType).includes(filter as FilterType)) {
@@ -131,6 +154,8 @@ export class EventService {
     query.orderBy('event.date', 'DESC');
 
     const [data, total] = await query.getManyAndCount();
+
+    await this.redisClient.setex(cacheKey, 3600, JSON.stringify({ total, page: pageNum, limit: limitNum, data }));
 
     return { total, page: pageNum, limit: limitNum, data };
   }

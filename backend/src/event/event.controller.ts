@@ -62,7 +62,7 @@ export class EventController {
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
   @Get(':id')
-  getById(@Param('id') id: string) {
+  getById(@Param('id') id: string, @Req() req: { user: JwtUser }) {
     return this.eventService.getEventById(Number(id));
   }
 
