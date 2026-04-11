@@ -32,14 +32,7 @@ const UserDashboard = () => {
       }
     }
   }, [navigate, token]);
-  /**
-   * Fetches the events and updates the state with the retrieved events.
-   * This function is called when the component mounts to ensure that the available events are displayed on the dashboard.
-   * It sends a GET request to the backend API endpoint for fetching events, including the authorization token in the request headers.
-   * If the request is successful, it updates the `events` state with the retrieved data. If there is an error, it logs the error to the console.
-   * @param none
-   * @returns void
-   */
+
   useEffect(() => {
     async function fetchEvents() {
       const response = await axios.get("/event", {
@@ -53,14 +46,6 @@ const UserDashboard = () => {
     fetchEvents();
   }, []);
 
-  /**
-   * Fetches the tickets for the logged-in user and updates the state with the retrieved tickets.
-   * This function is called when the component mounts to ensure that the user's tickets are displayed on the dashboard.
-   * It sends a GET request to the backend API endpoint for fetching tickets, including the authorization token in the request headers.
-   * If the request is successful, it updates the `tickets` state with the retrieved data. If there is an error, it logs the error to the console.
-   * @param none
-   * @returns void
-   */
   useEffect(() => {
     async function fetchTickets() {
       const response = await axios.get("/ticket", {
@@ -74,10 +59,6 @@ const UserDashboard = () => {
     fetchTickets();
   }, []);
 
-  /**
-   * @param eventId
-   * @param seatNumber
-   */
   async function postTicket(eventId: number, seatNumber: string) {
     try {
       const response = await axios.post(
@@ -95,45 +76,137 @@ const UserDashboard = () => {
     }
   }
 
+  function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("refresh_token");
+    navigate("/login");
+  }
+
   return (
-    <div className="flex flex-col gap-6 p-8 max-w-4xl mx-auto">
-      <h1>User Dashboard</h1>
-      <h2>Available Events</h2>
-      <ul>
-        {events.map((event) => (
-          <li key={event.id} className="flex flex-col gap-2">
-            <h3>{event.title}</h3>
-            <p>{event.location}</p>
-            <p>{event.date}</p>
-            <input
-              type="text"
-              value={seatNumber[event.id] || ""}
-              onChange={(e) =>
-                setSeatNumber({ ...seatNumber, [event.id]: e.target.value })
-              }
-              placeholder="Seat Number"
-              className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              onClick={() => postTicket(event.id, seatNumber[event.id])}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              Book Ticket
-            </button>
-          </li>
-        ))}
-      </ul>
-        <h2>My Tickets</h2>
-        <ul>
-          {tickets.map((ticket) => (
-            <li key={ticket.id}>
-              <p>Event: {ticket.eventId}</p>
-              <p>Seat: {ticket.seatNumber}</p>
-              <p>Booked: {new Date(ticket.bookingDate).toLocaleDateString()}</p>
-            </li>
-          ))}
-        </ul>
-    </div>
+    <main className="app-shell">
+      <div className="dashboard-container space-y-6">
+        <header className="glass-panel flex flex-col justify-between gap-4 p-6 md:flex-row md:items-center">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-blue-300">
+              User Workspace
+            </p>
+            <h1 className="page-title">Ticket Dashboard</h1>
+            <p className="page-subtitle">
+              Browse active events and manage all your bookings.
+            </p>
+          </div>
+          <button type="button" onClick={logout} className="btn-muted">
+            Logout
+          </button>
+        </header>
+
+        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <article className="stat-card">
+            <p className="stat-label">Available Events</p>
+            <p className="stat-value">{events.length}</p>
+          </article>
+          <article className="stat-card">
+            <p className="stat-label">Booked Tickets</p>
+            <p className="stat-value">{tickets.length}</p>
+          </article>
+          <article className="stat-card">
+            <p className="stat-label">Account Type</p>
+            <p className="stat-value text-lg">Standard User</p>
+          </article>
+        </section>
+
+        <section className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
+          <section className="surface p-5">
+            <h2 className="section-heading">Available Events</h2>
+            <p className="page-subtitle mt-1">
+              Choose an event and enter your seat number to book instantly.
+            </p>
+
+            <div className="mt-4 space-y-4">
+              {events.length === 0 && (
+                <p className="rounded-lg border border-dashed border-slate-500/40 bg-slate-900/40 px-4 py-5 text-sm text-[var(--text-secondary)]">
+                  No events are currently available.
+                </p>
+              )}
+
+              {events.map((event) => (
+                <article
+                  key={event.id}
+                  className="rounded-lg border border-slate-600/40 bg-slate-900/45 p-4"
+                >
+                  <h3 className="text-lg font-semibold">{event.title}</h3>
+                  <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                    {event.location}
+                  </p>
+                  <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                    {new Date(event.date).toLocaleDateString()}
+                  </p>
+
+                  <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                    <input
+                      type="text"
+                      value={seatNumber[event.id] || ""}
+                      onChange={(e) =>
+                        setSeatNumber({ ...seatNumber, [event.id]: e.target.value })
+                      }
+                      placeholder="Seat Number"
+                      className="input-dark sm:max-w-[180px]"
+                    />
+                    <button
+                      onClick={() => postTicket(event.id, seatNumber[event.id])}
+                      className="btn-primary"
+                    >
+                      Book Ticket
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="surface p-5">
+            <h2 className="section-heading">My Tickets</h2>
+            <p className="page-subtitle mt-1">
+              Your latest bookings with event and seat details.
+            </p>
+
+            <div className="mt-4 space-y-3">
+              {tickets.length === 0 && (
+                <p className="rounded-lg border border-dashed border-slate-500/40 bg-slate-900/40 px-4 py-5 text-sm text-[var(--text-secondary)]">
+                  You do not have any bookings yet.
+                </p>
+              )}
+
+              {tickets.map((ticket) => (
+                <article
+                  key={ticket.id}
+                  className="rounded-lg border border-slate-600/40 bg-slate-900/45 p-4"
+                >
+                  <p className="text-sm text-[var(--text-secondary)]">
+                    Event ID:{" "}
+                    <span className="font-semibold text-[var(--text-primary)]">
+                      {ticket.eventId}
+                    </span>
+                  </p>
+                  <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                    Seat:{" "}
+                    <span className="font-semibold text-[var(--text-primary)]">
+                      {ticket.seatNumber}
+                    </span>
+                  </p>
+                  <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                    Booked on:{" "}
+                    <span className="font-semibold text-[var(--text-primary)]">
+                      {new Date(ticket.bookingDate).toLocaleDateString()}
+                    </span>
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
   );
 };
 
