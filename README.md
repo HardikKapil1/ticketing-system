@@ -1,6 +1,6 @@
-# 🎟️ Ticketing System
+# 🎟️ TicketOps
 
-A full-stack ticketing application built with NestJS, MySQL, and React.
+A full-stack ticketing application built with NestJS, MySQL, React, and Next.js.
 
 ## 🛠️ Tech Stack
 
@@ -11,19 +11,19 @@ A full-stack ticketing application built with NestJS, MySQL, and React.
 - Swagger API Documentation
 
 **Frontend**
-- React + TypeScript
+- React + TypeScript (classic SPA)
+- Next.js + TypeScript (App Router)
 - Tailwind CSS
 - Axios with interceptors
-- React Router
 
 ## ✨ Features
-
 - JWT Auth with refresh tokens
 - Role-based access (Admin / User)
-- Admin: Create, update, delete events
+- Admin: Create, delete events, view all tickets
 - User: Browse events, book tickets, view bookings
 - Filtering, search, pagination on events
 - Protected routes on frontend
+- Professional dark SaaS UI
 
 ## 🚀 Getting Started
 
@@ -35,15 +35,21 @@ npm install
 npm run start:dev
 ```
 
-**Frontend**
+**React Frontend**
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-## 🔑 Environment Variables
+**Next.js Frontend**
+```bash
+cd ticketing-frontend-next
+npm install
+npm run dev
+```
 
+## 🔑 Environment Variables
 ```env
 JWT_SECRET=your_jwt_secret
 JWT_REFRESH_SECRET=your_refresh_secret
@@ -54,8 +60,7 @@ DB_PASSWORD=
 DB_NAME=ticketing
 ```
 
-## �API Endpoints
-
+## 📡 API Endpoints
 - `POST /user/register` — Register
 - `POST /user/login` — Login
 - `POST /auth/refresh` — Refresh token
@@ -64,3 +69,5 @@ DB_NAME=ticketing
 - `DELETE /event/:id` — Delete event (Admin)
 - `POST /ticket` — Book ticket
 - `GET /ticket` — My tickets
+- `GET /ticket/admin` — All tickets (Admin)
+- `GET /user/all` — All users (Admin)
