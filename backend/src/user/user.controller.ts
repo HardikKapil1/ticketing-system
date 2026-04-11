@@ -1,8 +1,11 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { LoginDto, RegisterDto } from './user.dto';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import type { Response } from 'express';
+import { AuthGuard } from '@nestjs/passport';
+import { Role } from 'src/common/enums/role.enum';
+import { Roles } from 'src/decorators/roles.decorator';
 
 @Controller('user')
 export class UserController {
@@ -26,5 +29,12 @@ export class UserController {
       access_token: tokens.access_token,
       refresh_token: tokens.refresh_token
     })
+  }
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('jwt'))
+  @Roles(Role.ADMIN)
+  @Get('all')
+  async findAll() {
+    return this.userService.findAll();
   }
 }

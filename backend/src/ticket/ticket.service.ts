@@ -33,4 +33,11 @@ export class TicketService {
   async getTicketsForUser(userId: number) {
     return this.ticketRepository.find({ where: { userId } });
   }
+  /**
+   * Retrieves all tickets.
+   * @returns Promise<Ticket[]>
+   */
+  async getAllTickets() {
+  return this.ticketRepository.find()
+}
 }
