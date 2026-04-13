@@ -2,11 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Ticket } from './ticket.entity';
 import { Repository } from 'typeorm';
+import { NotificationsGateway } from 'src/notifications/notifications.gateway';
 
 @Injectable()
 export class TicketService {
-  @InjectRepository(Ticket)
-  private ticketRepository!: Repository<Ticket>;
+  constructor(
+    private notificationsGateway: NotificationsGateway,
+    @InjectRepository(Ticket)
+    private ticketRepository: Repository<Ticket>
+  ) {}
 
   /**
    * Books a new ticket for a user for a specific event and seat number.
@@ -23,6 +27,8 @@ export class TicketService {
       eventId,
     });
     await this.ticketRepository.save(newTicket);
+    // Send notification to the user
+    await this.notificationsGateway.sendNotification(userId, "Your ticket has been booked successfully.");
     return newTicket;
   }
   /**
@@ -33,11 +39,11 @@ export class TicketService {
   async getTicketsForUser(userId: number) {
     return this.ticketRepository.find({ where: { userId } });
   }
-  /**
-   * Retrieves all tickets.
-   * @returns Promise<Ticket[]>
-   */
-  async getAllTickets() {
-  return this.ticketRepository.find()
+/**
+ * Retrieves all tickets.
+ * @returns Promise<Ticket[]>
+ */
+async getAllTickets() {
+  return this.ticketRepository.find();
 }
 }

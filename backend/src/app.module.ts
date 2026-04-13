@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { TicketModule } from './ticket/ticket.module';
 import { RedisModule } from './common/redis.module';
 import { ConfigModule } from '@nestjs/config';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ConfigModule } from '@nestjs/config';
     AuthModule,
     TicketModule,
     RedisModule,
+    NotificationsModule
   ],
   controllers: [AppController],
   providers: [AppService],
