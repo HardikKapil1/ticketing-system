@@ -34,10 +34,7 @@ export class EventController {
   @Roles(Role.ADMIN)
   @Post()
   create(@Body() body: CreateEventDto, @Req() req: { user: JwtUser }) {
-    return this.eventService.createEvent({
-      ...body,
-      userId: req.user.userId, // 👈 attach owner
-    } as Event);
+    return this.eventService.createEvent(body, req.user.userId );
   }
 
   // 🔐 AUTHENTICATED USERS

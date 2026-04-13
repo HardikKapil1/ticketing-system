@@ -11,6 +11,7 @@ import { FilterType } from '../common/enums/event.enum';
 import { Role } from 'src/common/enums/role.enum';
 import { JwtUser } from 'src/common/interfaces/jwt-user.inteface';
 import Redis from 'ioredis';
+import { CreateEventDto, UpdateEventDto } from './event.dto';
 
 
 @Injectable()
@@ -26,12 +27,14 @@ export class EventService {
    * @returns The newly created event.
    * @throws BadRequestException if the event title is missing.
    */
-  async createEvent(data: Event) {
+  async createEvent(data: CreateEventDto, userId: number ) {
     if (!data.title) {
       throw new BadRequestException('Event title is required');
     }
     const newEvent = {
       ...data,
+      userId, // 👈 attach owner
+      availableSeats: data.totalSeats,
     };
     const keys =await this.redisClient.keys( 'events:*');
     if(keys.length > 0) {
@@ -84,7 +87,7 @@ export class EventService {
    * @param data
    * @returns The updated event.
    */
-  async updateEvent(id: number, data: Partial<Event>, user: JwtUser) {
+  async updateEvent(id: number, data: Partial<UpdateEventDto>, user: JwtUser) {
     const event = await this.eventRepository.findOne({ where: { id } });
     
     if (!event) {

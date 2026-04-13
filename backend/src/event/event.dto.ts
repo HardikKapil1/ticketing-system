@@ -13,7 +13,21 @@ export class UpdateEventDto {
     description: 'The date and time of the event',
   })
   date?: Date;
+
+  
+  @ApiProperty({ example: 'A night of amazing music!' })
+  description?: string;
+
+  @ApiProperty({ example: 25.99 })
+  price?: number;
+
+  @ApiProperty({ example: 100 })
+  totalSeats?: number;
+
+  @ApiProperty({ example: 'Music'})
+  category?: string;
 }
+
 export class CreateEventDto {
   @ApiProperty({ example: 'Concert Night' })
   title!: string;
@@ -23,4 +37,16 @@ export class CreateEventDto {
 
   @ApiProperty({ example: '2026-05-01' })
   date!: Date;
+
+  @ApiProperty({ example: 'A night of amazing music!' })
+  description!: string;
+
+  @ApiProperty({ example: 25.99 })
+  price!: number;
+
+  @ApiProperty({ example: 100 })
+  totalSeats!: number;
+
+  @ApiProperty({ example: 'Music'})
+  category!: string;
 }
