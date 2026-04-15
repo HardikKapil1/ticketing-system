@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
@@ -35,10 +35,10 @@ const AdminDashboard = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   /**
    * Handles the creation of a new event by sending a POST request to the backend API with the event details. After successful creation, it clears the form fields and refreshes the event list.
-  */
+   */
   async function handleCreate() {
     try {
-      const storedToken = localStorage.getItem('token');
+      const storedToken = localStorage.getItem("token");
       await axios.post(
         "http://localhost:3000/event",
         {
@@ -47,27 +47,27 @@ const AdminDashboard = () => {
           date: date,
         },
         {
-            headers: {
-                Authorization: `Bearer ${storedToken}`,
-            },
-        },
-    );
-    setTitle("");
-    setLocation("");
-    setDate("");
-    fetchData(storedToken || "");
-} catch (error) {
-    console.error("Failed to create event:", error);
-}
-}
-
-async function handleDelete(id: number) {
-  try {
-      const storedToken = localStorage.getItem('token');
-      await axios.delete(`http://localhost:3000/event/${id}`, {
           headers: {
-              Authorization: `Bearer ${storedToken}`,
+            Authorization: `Bearer ${storedToken}`,
           },
+        },
+      );
+      setTitle("");
+      setLocation("");
+      setDate("");
+      fetchData(storedToken || "");
+    } catch (error) {
+      console.error("Failed to create event:", error);
+    }
+  }
+
+  async function handleDelete(id: number) {
+    try {
+      const storedToken = localStorage.getItem("token");
+      await axios.delete(`http://localhost:3000/event/${id}`, {
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+        },
       });
       if (storedToken) fetchData(storedToken);
     } catch (error) {
@@ -77,52 +77,57 @@ async function handleDelete(id: number) {
 
   async function fetchData(token: string) {
     try {
-        const response = await axios.get("http://localhost:3000/event", {
-            headers: {
-                Authorization: `Bearer ${token}`,
-              },
-          });
-          setEvent(response.data.data);
-      } catch (error) {
-          console.error("Failed to fetch admin data:", error);
-      }
+      const response = await axios.get("http://localhost:3000/event", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setEvent(response.data.data);
+    } catch (error) {
+      console.error("Failed to fetch admin data:", error);
+    }
   }
 
   async function fetchTickets(token: string) {
     try {
-        const response = await axios.get("http://localhost:3000/ticket/admin", {
-            headers: {
-                Authorization: `Bearer ${token}`,
-              },
-          });
-          setTickets(response.data);
-      } catch (error) {
-          console.error("Failed to fetch tickets:", error);
-      }
+      const response = await axios.get("http://localhost:3000/ticket/admin", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setTickets(response.data);
+    } catch (error) {
+      console.error("Failed to fetch tickets:", error);
+    }
   }
-    
-    function logout() {
-      localStorage.removeItem("token");
-      localStorage.removeItem("refresh_token");
+
+  function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("refresh_token");
+    router.push("/login");
+  }
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (!storedToken) {
       router.push("/login");
+      return;
     }
 
+    const decoded = jwtDecode<JwtPayload>(storedToken);
+    if (decoded.role !== "ADMIN") {
+      router.push("/user");
+      return;
+    }
 
-useEffect(() => {
-  const storedToken = localStorage.getItem('token')
-  if (!storedToken) { router.push('/login'); return }
-  
-  const decoded = jwtDecode<JwtPayload>(storedToken)
-  if (decoded.role !== 'ADMIN') { router.push('/user'); return }
-  
-    console.log('token:', storedToken)
+    console.log("token:", storedToken);
 
-  const loadData = async () => {
-    await Promise.all([fetchData(storedToken), fetchTickets(storedToken)])
-  }
-  
-  loadData()
-}, [router])
+    const loadData = async () => {
+      await Promise.all([fetchData(storedToken), fetchTickets(storedToken)]);
+    };
+
+    loadData();
+  }, [router]);
 
   return (
     <main className="app-shell">
@@ -215,9 +220,7 @@ useEffect(() => {
           <section className="surface p-5">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="section-heading">Event List</h2>
-              <span className="status-pill">
-                {event.length} records
-              </span>
+              <span className="status-pill">{event.length} records</span>
             </div>
 
             <div className="space-y-3">
@@ -229,10 +232,7 @@ useEffect(() => {
               )}
 
               {event.map((e: Event) => (
-                <article
-                  key={e.id}
-                  className="data-card"
-                >
+                <article key={e.id} className="data-card">
                   <h3 className="text-lg font-semibold">{e.title}</h3>
                   <p className="mt-1 text-sm text-[var(--text-secondary)]">
                     {e.location}
@@ -256,16 +256,11 @@ useEffect(() => {
           <h2 className="section-heading">All Booked Tickets</h2>
           <div className="mt-4 space-y-3">
             {tickets.length === 0 && (
-              <p className="empty-state">
-                No tickets booked yet.
-              </p>
+              <p className="empty-state">No tickets booked yet.</p>
             )}
 
             {tickets.map((ticket: Ticket) => (
-              <article
-                key={ticket.id}
-                className="data-card"
-              >
+              <article key={ticket.id} className="data-card">
                 <h3 className="text-lg font-semibold">
                   Ticket ID: {ticket.id} - Event ID: {ticket.eventId}
                 </h3>

@@ -121,7 +121,8 @@ const UserDashboard = () => {
               {events.map((event) => (
                 <article
                   key={event.id}
-                  className="data-card"
+                  className="data-card cursor-pointer"
+                  onClick={() => router.push(`/events/${event.id}`)}
                 >
                   <h3 className="text-lg font-semibold">{event.title}</h3>
                   <p className="mt-1 text-sm text-[var(--text-secondary)]">
