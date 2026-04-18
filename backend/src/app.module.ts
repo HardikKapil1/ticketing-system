@@ -12,9 +12,16 @@ import { RedisModule } from './common/redis.module';
 import { ConfigModule } from '@nestjs/config';
 import { NotificationsModule } from './notifications/notifications.module';
 import { PaymentModule } from './payment/payment.module';
+import { ThrottlerModule } from '@nestjs/throttler/dist/throttler.module';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard } from '@nestjs/throttler/dist/throttler.guard';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot([{
+      ttl: 60000,  // 1 minute
+      limit: 10,   // 10 requests per minute
+    }]),
     ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env'] }),
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -35,6 +42,6 @@ import { PaymentModule } from './payment/payment.module';
     PaymentModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, { provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
-export class AppModule {}
+export class AppModule { }
