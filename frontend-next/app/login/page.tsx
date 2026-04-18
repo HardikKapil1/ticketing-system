@@ -1,9 +1,9 @@
 "use client";
 
-import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { api } from "../lib/api";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -14,7 +14,7 @@ const LoginPage = () => {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/user/login", {
+      const response = await api.post("/user/login", {
         email,
         password,
       });

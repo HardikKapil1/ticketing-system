@@ -1,8 +1,8 @@
 "use client";
-import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { api } from "../lib/api";
 
 interface JwtPayload {
   userId: number;
@@ -50,8 +50,8 @@ function handleEdit(e: Event) {
 async function handleUpdate() {
   if (!editingEvent) return
   const token = localStorage.getItem("token")
-  await axios.patch(
-    `http://localhost:3000/event/${editingEvent.id}`,
+  await api.patch(
+    `/event/${editingEvent.id}`,
     { title, location, date },
     { headers: { Authorization: `Bearer ${token}` }}
   )
@@ -68,8 +68,8 @@ async function handleUpdate() {
   async function handleCreate() {
     try {
       const storedToken = localStorage.getItem("token");
-      await axios.post(
-        "http://localhost:3000/event",
+      await api.post(
+        "/event",
         {
           title: title,
           location: location,
@@ -95,7 +95,7 @@ async function handleUpdate() {
   async function handleDelete(id: number) {
     try {
       const storedToken = localStorage.getItem("token");
-      await axios.delete(`http://localhost:3000/event/${id}`, {
+      await api.delete(`/event/${id}`, {
         headers: {
           Authorization: `Bearer ${storedToken}`,
         },
@@ -113,7 +113,7 @@ async function handleUpdate() {
 
   async function fetchData(token: string) {
     try {
-      const response = await axios.get("http://localhost:3000/event", {
+      const response = await api.get("/event", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -131,7 +131,7 @@ async function handleUpdate() {
 
   async function fetchTickets(token: string) {
     try {
-      const response = await axios.get("http://localhost:3000/ticket/admin", {
+      const response = await api.get("/ticket/admin", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

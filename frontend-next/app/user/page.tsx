@@ -1,8 +1,8 @@
 "use client";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
+import { api } from "../lib/api";
 
 interface Event {
   id: number;
@@ -26,14 +26,14 @@ const UserDashboard = () => {
   const [seatNumber, setSeatNumber] = useState<{ [key: number]: string }>({});
 
   async function fetchEvents(token: string) {
-    const response = await axios.get("http://localhost:3000/event", {
+    const response = await api.get("/event", {
       headers: { Authorization: `Bearer ${token}` },
     });
     setEvents(response.data.data);
   }
 
   async function fetchTickets(token: string) {
-    const response = await axios.get("http://localhost:3000/ticket", {
+    const response = await api.get("/ticket", {
       headers: { Authorization: `Bearer ${token}` },
     });
     setTickets(response.data);
@@ -41,11 +41,12 @@ const UserDashboard = () => {
 
   async function postTicket(eventId: number, seat: string) {
     const token = localStorage.getItem("token");
-    await axios.post(
-      "http://localhost:3000/ticket",
-      { eventId, seatNumber: seat },
-      { headers: { Authorization: `Bearer ${token}` } },
-    );
+    await api.post("/ticket", {
+      eventId,
+      seatNumber: seat
+    }, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
   }
 
   useEffect(() => {

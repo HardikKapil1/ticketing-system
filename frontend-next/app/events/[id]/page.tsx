@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import { api } from "@/app/lib/api";
 
 interface Event {
   title: string;
@@ -36,7 +36,7 @@ async function handleBooking() {
   const token = localStorage.getItem('token')
   
   // Step 1: Create order
-  const { data } = await axios.post('http://localhost:3000/payment/order',
+  const { data } = await api.post('/payment/order',
     { eventId: Number(id), seatNumber },
     { headers: { Authorization: `Bearer ${token}` }}
   )
@@ -52,7 +52,7 @@ async function handleBooking() {
     handler: async function(response: any) {
       console.log('Payment successful:', response);
       // Step 3: Verify payment
-      await axios.post('http://localhost:3000/payment/verify',
+      await api.post('/payment/verify',
         {
           razorpay_order_id: response.razorpay_order_id,
           razorpay_payment_id: response.razorpay_payment_id,
@@ -70,10 +70,9 @@ async function handleBooking() {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    axios
-      .get(`http://localhost:3000/event/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+    api.get(`/event/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
       .then((res) => setEvent(res.data))
       .catch((err) => {
         console.error(err);
