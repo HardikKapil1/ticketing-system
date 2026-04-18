@@ -22,6 +22,16 @@ export default function EventPage({
   const { id } = use(params);
   const [event, setEvent] = useState<Event | null>(null);
   const router = useRouter();
+  const [seatNumber, setSeatNumber] = useState('')
+
+async function handleBooking() {
+  const token = localStorage.getItem('token')
+  await axios.post('http://localhost:3000/ticket', 
+    { eventId: Number(id), seatNumber },
+    { headers: { Authorization: `Bearer ${token}` }}
+  )
+  alert('Ticket booked!')
+}
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -48,13 +58,16 @@ export default function EventPage({
       <p>💰 ₹{event.price}</p>
       <p>🪑 {event.availableSeats} seats left</p>
       <p>🏷️ {event.category}</p>
-
-      <button
-        className="bg-blue-500 text-white px-4 py-2 mt-4 rounded"
-        onClick={() => router.push(`/events/${id}/book`)}
-      >
-        Book Ticket
-      </button>
+      <input 
+  type="text"
+  placeholder="Enter seat number"
+  value={seatNumber}
+  onChange={(e) => setSeatNumber(e.target.value)}
+  className="input-dark"
+/>
+<button onClick={handleBooking} className="btn-primary mt-4">
+  Book Ticket
+</button>
     </div>
   );
 }
