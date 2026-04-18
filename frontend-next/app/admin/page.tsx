@@ -34,6 +34,7 @@ const AdminDashboard = () => {
   const [date, setDate] = useState("");
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  const [price, setPrice] = useState(0)
 /**
  * Handles the edit action for an event by populating the form fields with the selected event's details, allowing the admin to modify and update the event information. When the "Edit" button is clicked, it sets the editing state and pre-fills the form with the existing event data for easy editing.
  * @param e - The event object that is being edited, containing its current details such as title, location, and date.
@@ -73,6 +74,7 @@ async function handleUpdate() {
           title: title,
           location: location,
           date: date,
+          price: price,
         },
         {
           headers: {
@@ -83,6 +85,7 @@ async function handleUpdate() {
       setTitle("");
       setLocation("");
       setDate("");
+      setPrice(0);
       fetchData(storedToken || "");
     } catch (error) {
       console.error("Failed to create event:", error);
@@ -246,6 +249,17 @@ async function handleUpdate() {
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
+                  className="input-dark"
+                  required
+                />
+              </div>
+               <div>
+                <label className="field-label">Price (₹)</label>
+                <input
+                  type="number"
+                  placeholder="500"
+                  value={price}
+                  onChange={(e) => setPrice(Number(e.target.value))}
                   className="input-dark"
                   required
                 />

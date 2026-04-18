@@ -1,11 +1,16 @@
-import { Controller, Post, Body, Req } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
 import { PaymentService } from './payment.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport/dist/auth.guard';
+
 
 @Controller('payment')
 export class PaymentController {
     constructor(private paymentService: PaymentService) { }
 
     @Post('order')
+    @ApiBearerAuth('access-token')
+    @UseGuards(AuthGuard('jwt'))
     createOrder(
         @Body() body: { eventId: number; seatNumber: string },
         @Req() req: { user: { userId: number } }

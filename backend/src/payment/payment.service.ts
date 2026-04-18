@@ -96,6 +96,10 @@ export class PaymentService {
             return { message: 'Already processed' };
         }
 
+        console.log('Expected:', expectedSignature);
+        console.log('Received:', razorpay_signature);
+        console.log('Order ID:', razorpay_order_id);
+        console.log('Payment ID:', razorpay_payment_id);
         if (expectedSignature !== razorpay_signature) {
             payment.status = 'FAILED';
             await this.paymentRepository.save(payment);
@@ -106,7 +110,6 @@ export class PaymentService {
         payment.paymentId = razorpay_payment_id;
         payment.status = 'SUCCESS';
         await this.paymentRepository.save(payment);
-
         return this.ticketService.bookTicket(
             payment.userId,
             payment.eventId,

@@ -24,15 +24,49 @@ export default function EventPage({
   const router = useRouter();
   const [seatNumber, setSeatNumber] = useState('')
 
+  /**
+   * 
+   * Handles the ticket booking process:
+   * 1. Creates a payment order for the selected event and seat number.
+   * 2. Opens the Razorpay payment popup with the order details.
+   * 3. On successful payment, verifies the payment and books the ticket.
+   */
+
 async function handleBooking() {
   const token = localStorage.getItem('token')
-  await axios.post('http://localhost:3000/ticket', 
+  
+  // Step 1: Create order
+  const { data } = await axios.post('http://localhost:3000/payment/order',
     { eventId: Number(id), seatNumber },
     { headers: { Authorization: `Bearer ${token}` }}
   )
-  alert('Ticket booked!')
-}
 
+  // Step 2: Open Razorpay popup
+  const options = {
+    key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+    amount: data.amount,
+    currency: 'INR',
+    order_id: data.orderId,
+    name: 'TicketOps',
+    description: `Booking for ${event?.title}`,
+    handler: async function(response: any) {
+      console.log('Payment successful:', response);
+      // Step 3: Verify payment
+      await axios.post('http://localhost:3000/payment/verify',
+        {
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+        },
+        { headers: { Authorization: `Bearer ${token}` }}
+      )
+      alert('Ticket booked successfully!')
+    }
+  }
+
+  const razorpay = new (window as any).Razorpay(options)
+  razorpay.open()
+}
   useEffect(() => {
     const token = localStorage.getItem("token");
 
