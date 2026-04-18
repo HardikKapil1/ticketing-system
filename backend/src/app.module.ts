@@ -11,6 +11,7 @@ import { TicketModule } from './ticket/ticket.module';
 import { RedisModule } from './common/redis.module';
 import { ConfigModule } from '@nestjs/config';
 import { NotificationsModule } from './notifications/notifications.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     TicketModule,
     RedisModule,
     NotificationsModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

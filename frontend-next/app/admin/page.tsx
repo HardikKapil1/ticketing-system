@@ -33,6 +33,34 @@ const AdminDashboard = () => {
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+/**
+ * Handles the edit action for an event by populating the form fields with the selected event's details, allowing the admin to modify and update the event information. When the "Edit" button is clicked, it sets the editing state and pre-fills the form with the existing event data for easy editing.
+ * @param e - The event object that is being edited, containing its current details such as title, location, and date.
+ */
+
+function handleEdit(e: Event) {
+  setEditingEvent(e)
+  setTitle(e.title)
+  setLocation(e.location)
+  setDate(new Date(e.date).toISOString().split('T')[0])
+}
+
+async function handleUpdate() {
+  if (!editingEvent) return
+  const token = localStorage.getItem("token")
+  await axios.patch(
+    `http://localhost:3000/event/${editingEvent.id}`,
+    { title, location, date },
+    { headers: { Authorization: `Bearer ${token}` }}
+  )
+  setEditingEvent(null)
+  setTitle("")
+  setLocation("")
+  setDate("")
+  fetchData(token || "")
+}
+
   /**
    * Handles the creation of a new event by sending a POST request to the backend API with the event details. After successful creation, it clears the form fields and refreshes the event list.
    */
@@ -75,6 +103,11 @@ const AdminDashboard = () => {
     }
   }
 
+  /**
+   * Fetches all events for admin view by sending a GET request to the backend API with the admin's JWT token for authentication. The retrieved events are stored in the component's state.
+   * @param token - The JWT token used for authentication in the API request headers.
+   */
+
   async function fetchData(token: string) {
     try {
       const response = await axios.get("http://localhost:3000/event", {
@@ -87,6 +120,11 @@ const AdminDashboard = () => {
       console.error("Failed to fetch admin data:", error);
     }
   }
+
+  /**
+   * Fetches all tickets for admin view 
+   * @param token  
+   */
 
   async function fetchTickets(token: string) {
     try {
@@ -165,12 +203,14 @@ const AdminDashboard = () => {
         <section className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
           <form
             onSubmit={(e) => {
-              e.preventDefault();
-              handleCreate();
-            }}
+            e.preventDefault();
+            editingEvent ? handleUpdate() : handleCreate();
+          }}
             className="surface p-5"
           >
-            <h2 className="section-heading">Create New Event</h2>
+           <h2 className="section-heading">
+            {editingEvent ? "Edit Event" : "Create New Event"}
+          </h2>
             <p className="page-subtitle mt-1">
               Add details for upcoming events.
             </p>
@@ -213,7 +253,7 @@ const AdminDashboard = () => {
             </div>
 
             <button type="submit" className="btn-primary mt-6 w-full">
-              Add Event
+                {editingEvent ? "Update Event" : "Add Event"}
             </button>
           </form>
 
@@ -231,24 +271,32 @@ const AdminDashboard = () => {
                 </p>
               )}
 
-              {event.map((e: Event) => (
-                <article key={e.id} className="data-card">
-                  <h3 className="text-lg font-semibold">{e.title}</h3>
-                  <p className="mt-1 text-sm text-[var(--text-secondary)]">
-                    {e.location}
-                  </p>
-                  <p className="mt-1 text-sm text-[var(--text-secondary)]">
-                    {new Date(e.date).toLocaleDateString()}
-                  </p>
+            {event.map((e: Event) => (
+              <article key={e.id} className="data-card">
+                <h3 className="text-lg font-semibold">{e.title}</h3>
+                <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                  {e.location}
+                </p>
+                <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                  {new Date(e.date).toLocaleDateString()}
+                </p>
 
+                <div className="mt-4 flex gap-2">
+                  <button
+                    onClick={() => handleEdit(e)}
+                    className="btn-secondary text-sm"
+                  >
+                    Edit
+                  </button>
                   <button
                     onClick={() => handleDelete(e.id)}
-                    className="btn-danger mt-4 text-sm"
+                    className="btn-danger text-sm"
                   >
                     Delete
                   </button>
-                </article>
-              ))}
+                </div>
+              </article>
+            ))}
             </div>
           </section>
         </section>

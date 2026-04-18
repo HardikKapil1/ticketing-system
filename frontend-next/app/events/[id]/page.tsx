@@ -59,12 +59,12 @@ async function handleBooking() {
       <p>🪑 {event.availableSeats} seats left</p>
       <p>🏷️ {event.category}</p>
       <input 
-  type="text"
-  placeholder="Enter seat number"
-  value={seatNumber}
-  onChange={(e) => setSeatNumber(e.target.value)}
-  className="input-dark"
-/>
+        type="text"
+        placeholder="Enter seat number"
+        value={seatNumber}
+        onChange={(e) => setSeatNumber(e.target.value)}
+        className="input-dark"
+      />
 <button onClick={handleBooking} className="btn-primary mt-4">
   Book Ticket
 </button>
