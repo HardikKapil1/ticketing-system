@@ -51,8 +51,8 @@ export class UserService {
     return this.authService.generateToken(user);
   }
   async findAll() {
-  return this.userRepository.find({ 
-    select: ['id', 'email', 'role'] 
-  })
-}
+    return this.userRepository.find({
+      select: ['id', 'email', 'role'],
+    });
+  }
 }

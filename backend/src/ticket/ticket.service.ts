@@ -9,7 +9,7 @@ export class TicketService {
   constructor(
     private notificationsGateway: NotificationsGateway,
     @InjectRepository(Ticket)
-    private ticketRepository: Repository<Ticket>
+    private ticketRepository: Repository<Ticket>,
   ) {}
 
   /**
@@ -28,7 +28,10 @@ export class TicketService {
     });
     await this.ticketRepository.save(newTicket);
     // Send notification to the user
-    await this.notificationsGateway.sendNotification(userId, "Your ticket has been booked successfully.");
+    await this.notificationsGateway.sendNotification(
+      userId,
+      'Your ticket has been booked successfully.',
+    );
     return newTicket;
   }
   /**
@@ -39,11 +42,11 @@ export class TicketService {
   async getTicketsForUser(userId: number) {
     return this.ticketRepository.find({ where: { userId } });
   }
-/**
- * Retrieves all tickets.
- * @returns Promise<Ticket[]>
- */
-async getAllTickets() {
-  return this.ticketRepository.find();
-}
+  /**
+   * Retrieves all tickets.
+   * @returns Promise<Ticket[]>
+   */
+  async getAllTickets() {
+    return this.ticketRepository.find();
+  }
 }

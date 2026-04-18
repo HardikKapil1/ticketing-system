@@ -1,29 +1,29 @@
-'use client'
+"use client";
 
-import axios from 'axios'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import axios from "axios";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const LoginPage = () => {
-  const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/user/login', {
+      const response = await axios.post("http://localhost:3000/user/login", {
         email,
         password,
-      })
-      localStorage.setItem('token', response.data.access_token)
-      localStorage.setItem('refresh_token', response.data.refresh_token)
-      router.push('/dashboard')
+      });
+      localStorage.setItem("token", response.data.access_token);
+      localStorage.setItem("refresh_token", response.data.refresh_token);
+      router.push("/dashboard");
     } catch (err) {
-      console.error('Login failed:', err)
-      setError('Login failed. Please check your credentials and try again.')
+      console.error("Login failed:", err);
+      setError("Login failed. Please check your credentials and try again.");
     }
   }
 
@@ -33,26 +33,32 @@ const LoginPage = () => {
         <div className="auth-grid">
           <div className="auth-showcase hidden md:flex">
             <div className="auth-copy">
-              <p className="auth-eyebrow">
-                TicketOps
-              </p>
+              <p className="auth-eyebrow">TicketOps</p>
               <h1 className="mt-6 text-4xl font-semibold leading-tight lg:text-5xl">
                 Professional ticketing operations, all in one dashboard.
               </h1>
               <p className="page-subtitle mt-5 max-w-md">
-                Monitor events, manage bookings, and stay in control with a clean
-                operational view.
+                Monitor events, manage bookings, and stay in control with a
+                clean operational view.
               </p>
             </div>
 
             <div className="auth-kicker">
               <div>
-                <p className="text-sm font-semibold text-white">Unified control</p>
-                <p className="mt-2">Track events, users, and bookings from one workspace.</p>
+                <p className="text-sm font-semibold text-white">
+                  Unified control
+                </p>
+                <p className="mt-2">
+                  Track events, users, and bookings from one workspace.
+                </p>
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">Live operations</p>
-                <p className="mt-2">Keep admins and users aligned with a clear ticket flow.</p>
+                <p className="text-sm font-semibold text-white">
+                  Live operations
+                </p>
+                <p className="mt-2">
+                  Keep admins and users aligned with a clear ticket flow.
+                </p>
               </div>
             </div>
           </div>
@@ -61,7 +67,9 @@ const LoginPage = () => {
             <div className="auth-form-shell">
               <p className="auth-eyebrow md:hidden">TicketOps</p>
               <h2 className="page-title mt-3 text-2xl">Sign in</h2>
-              <p className="page-subtitle mt-3">Welcome back. Enter your credentials.</p>
+              <p className="page-subtitle mt-3">
+                Welcome back. Enter your credentials.
+              </p>
 
               <div className="mt-8 space-y-5">
                 <div>
@@ -100,7 +108,10 @@ const LoginPage = () => {
 
               <p className="mt-6 text-sm text-[var(--text-secondary)]">
                 No account yet?{" "}
-                <Link href="/register" className="font-semibold text-blue-300 transition hover:text-blue-200">
+                <Link
+                  href="/register"
+                  className="font-semibold text-blue-300 transition hover:text-blue-200"
+                >
                   Create one
                 </Link>
               </p>
@@ -110,6 +121,6 @@ const LoginPage = () => {
       </section>
     </main>
   );
-}
+};
 
-export default LoginPage
+export default LoginPage;

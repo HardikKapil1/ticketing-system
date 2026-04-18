@@ -30,7 +30,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     AuthModule,
     TicketModule,
     RedisModule,
-    NotificationsModule
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

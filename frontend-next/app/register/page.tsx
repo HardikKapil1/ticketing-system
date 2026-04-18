@@ -1,8 +1,8 @@
-'use client';
-import axios from 'axios';
+"use client";
+import axios from "axios";
 import React, { useState } from "react";
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Register = () => {
   const router = useRouter();
@@ -26,7 +26,9 @@ const Register = () => {
       router.push("/login");
     } catch (submitError) {
       console.error("Registration failed:", submitError);
-      setError("Registration failed. Please verify your details and try again.");
+      setError(
+        "Registration failed. Please verify your details and try again.",
+      );
     }
   }
 
@@ -36,9 +38,7 @@ const Register = () => {
         <div className="auth-grid">
           <div className="auth-showcase hidden md:flex">
             <div className="auth-copy">
-              <p className="auth-eyebrow text-cyan-300">
-                TicketOps
-              </p>
+              <p className="auth-eyebrow text-cyan-300">TicketOps</p>
               <h1 className="mt-6 text-4xl font-semibold leading-tight lg:text-5xl">
                 Launch your event workflow in minutes.
               </h1>
@@ -50,12 +50,21 @@ const Register = () => {
 
             <div className="auth-kicker">
               <div>
-                <p className="text-sm font-semibold text-white">Fast onboarding</p>
-                <p className="mt-2">Get your team into a clean ticketing workspace in a few steps.</p>
+                <p className="text-sm font-semibold text-white">
+                  Fast onboarding
+                </p>
+                <p className="mt-2">
+                  Get your team into a clean ticketing workspace in a few steps.
+                </p>
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">Clear workflows</p>
-                <p className="mt-2">Move from event setup to booking visibility without context switching.</p>
+                <p className="text-sm font-semibold text-white">
+                  Clear workflows
+                </p>
+                <p className="mt-2">
+                  Move from event setup to booking visibility without context
+                  switching.
+                </p>
               </div>
             </div>
           </div>
@@ -64,7 +73,9 @@ const Register = () => {
             <div className="auth-form-shell">
               <p className="auth-eyebrow md:hidden">TicketOps</p>
               <h2 className="page-title mt-3 text-2xl">Create account</h2>
-              <p className="page-subtitle mt-3">Start managing tickets with confidence.</p>
+              <p className="page-subtitle mt-3">
+                Start managing tickets with confidence.
+              </p>
 
               <div className="mt-8 space-y-5">
                 <div>
@@ -114,7 +125,10 @@ const Register = () => {
 
               <p className="mt-6 text-sm text-[var(--text-secondary)]">
                 Already have an account?{" "}
-                <Link href="/login" className="font-semibold text-blue-300 transition hover:text-blue-200">
+                <Link
+                  href="/login"
+                  className="font-semibold text-blue-300 transition hover:text-blue-200"
+                >
                   Sign in
                 </Link>
               </p>

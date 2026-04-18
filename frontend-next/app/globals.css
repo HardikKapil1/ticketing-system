@@ -39,8 +39,16 @@ body {
   color: var(--text-primary);
   font-family: var(--font-geist-sans), "Segoe UI", sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.22), transparent 28%),
-    radial-gradient(circle at top right, rgba(14, 165, 233, 0.14), transparent 24%),
+    radial-gradient(
+      circle at top left,
+      rgba(37, 99, 235, 0.22),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(14, 165, 233, 0.14),
+      transparent 24%
+    ),
     radial-gradient(circle at 50% 20%, rgba(15, 23, 42, 0.45), transparent 40%),
     linear-gradient(180deg, var(--bg-base) 0%, var(--bg-base-strong) 100%);
 }
@@ -153,7 +161,12 @@ textarea {
   }
 
   .btn-primary {
-    background: linear-gradient(135deg, #60a5fa 0%, var(--brand-strong) 52%, #1d4ed8 100%);
+    background: linear-gradient(
+      135deg,
+      #60a5fa 0%,
+      var(--brand-strong) 52%,
+      #1d4ed8 100%
+    );
     box-shadow:
       0 14px 26px rgba(29, 78, 216, 0.34),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -193,7 +206,11 @@ textarea {
 
   .stat-card {
     background:
-      radial-gradient(circle at top right, rgba(59, 130, 246, 0.14), transparent 34%),
+      radial-gradient(
+        circle at top right,
+        rgba(59, 130, 246, 0.14),
+        transparent 34%
+      ),
       linear-gradient(180deg, rgba(17, 30, 49, 0.95), rgba(11, 20, 34, 0.96));
     border: 1px solid rgba(125, 162, 235, 0.18);
     box-shadow:
@@ -218,7 +235,11 @@ textarea {
   .auth-showcase {
     position: relative;
     background:
-      radial-gradient(circle at top left, rgba(96, 165, 250, 0.18), transparent 34%),
+      radial-gradient(
+        circle at top left,
+        rgba(96, 165, 250, 0.18),
+        transparent 34%
+      ),
       linear-gradient(180deg, rgba(10, 22, 38, 0.88), rgba(6, 13, 24, 0.95));
     @apply flex min-h-[320px] flex-col justify-between overflow-hidden border-b border-[var(--border-soft)] p-8 sm:p-10 md:min-h-full md:border-b-0 md:border-r;
   }
@@ -230,7 +251,11 @@ textarea {
     width: 280px;
     height: 280px;
     border-radius: 9999px;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.22), transparent 68%);
+    background: radial-gradient(
+      circle,
+      rgba(59, 130, 246, 0.22),
+      transparent 68%
+    );
     filter: blur(18px);
   }
 

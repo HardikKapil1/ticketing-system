@@ -10,10 +10,9 @@ import { AuthController } from './auth.controller';
       secret: 'secretKey', // later move to env
       signOptions: { expiresIn: '1d' },
     }),
-
   ],
   providers: [AuthService, JwtStrategy],
   exports: [AuthService],
-  controllers: [AuthController]
+  controllers: [AuthController],
 })
 export class AuthModule {}

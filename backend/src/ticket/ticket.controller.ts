@@ -8,7 +8,6 @@ import { RolesGuard } from 'src/guards/roles.guard';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
 
-
 @ApiBearerAuth('access-token')
 @Controller('ticket')
 export class TicketController {

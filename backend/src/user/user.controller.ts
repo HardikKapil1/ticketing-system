@@ -9,7 +9,7 @@ import { Roles } from 'src/decorators/roles.decorator';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @ApiBody({ type: RegisterDto })
   @Post('register')
@@ -19,16 +19,16 @@ export class UserController {
   @ApiBody({ type: LoginDto })
   @Post('login')
   async login(@Body() body: LoginDto, @Res() res: Response) {
-    const tokens = await this.userService.login(body.email, body.password)
+    const tokens = await this.userService.login(body.email, body.password);
     res.cookie('refresh_token', tokens.refresh_token, {
       httpOnly: true,
-      maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days in ms
-    })
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in ms
+    });
 
     return res.json({
       access_token: tokens.access_token,
-      refresh_token: tokens.refresh_token
-    })
+      refresh_token: tokens.refresh_token,
+    });
   }
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))

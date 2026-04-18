@@ -14,7 +14,6 @@ export class UpdateEventDto {
   })
   date?: Date;
 
-  
   @ApiProperty({ example: 'A night of amazing music!' })
   description?: string;
 
@@ -24,7 +23,7 @@ export class UpdateEventDto {
   @ApiProperty({ example: 100 })
   totalSeats?: number;
 
-  @ApiProperty({ example: 'Music'})
+  @ApiProperty({ example: 'Music' })
   category?: string;
 }
 
@@ -47,6 +46,6 @@ export class CreateEventDto {
   @ApiProperty({ example: 100 })
   totalSeats!: number;
 
-  @ApiProperty({ example: 'Music'})
+  @ApiProperty({ example: 'Music' })
   category!: string;
 }

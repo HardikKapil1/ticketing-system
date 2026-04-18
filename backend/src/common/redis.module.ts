@@ -9,7 +9,7 @@ import Redis from 'ioredis';
       useFactory: () => {
         console.log('Creating Redis client with URL:', process.env.REDIS_URL);
         return new Redis(process.env.REDIS_URL!, {
-            tls: {}
+          tls: {},
         });
       },
     },

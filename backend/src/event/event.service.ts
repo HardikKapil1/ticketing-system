@@ -13,7 +13,6 @@ import { JwtUser } from 'src/common/interfaces/jwt-user.inteface';
 import Redis from 'ioredis';
 import { CreateEventDto, UpdateEventDto } from './event.dto';
 
-
 @Injectable()
 export class EventService {
   @Inject('REDIS_CLIENT')
@@ -27,7 +26,7 @@ export class EventService {
    * @returns The newly created event.
    * @throws BadRequestException if the event title is missing.
    */
-  async createEvent(data: CreateEventDto, userId: number ) {
+  async createEvent(data: CreateEventDto, userId: number) {
     if (!data.title) {
       throw new BadRequestException('Event title is required');
     }
@@ -36,8 +35,8 @@ export class EventService {
       userId, // 👈 attach owner
       availableSeats: data.totalSeats,
     };
-    const keys =await this.redisClient.keys( 'events:*');
-    if(keys.length > 0) {
+    const keys = await this.redisClient.keys('events:*');
+    if (keys.length > 0) {
       await this.redisClient.del(keys);
     }
     await this.eventRepository.save(newEvent);
@@ -74,8 +73,8 @@ export class EventService {
     }
 
     await this.eventRepository.remove(event);
-    const keys =await this.redisClient.keys( 'events:*');
-    if(keys.length > 0) {
+    const keys = await this.redisClient.keys('events:*');
+    if (keys.length > 0) {
       await this.redisClient.del(keys);
     }
 
@@ -89,23 +88,23 @@ export class EventService {
    */
   async updateEvent(id: number, data: Partial<UpdateEventDto>, user: JwtUser) {
     const event = await this.eventRepository.findOne({ where: { id } });
-    
+
     if (!event) {
       throw new NotFoundException(`Event with id ${id} not found`);
     }
-    
+
     if (user.role !== Role.ADMIN && event.userId !== user.userId) {
       throw new ForbiddenException('Not allowed to update this event');
     }
-    
+
     if (data.title !== undefined && data.title.trim() === '') {
       throw new BadRequestException('Title cannot be empty');
     }
-    
+
     Object.assign(event, data);
     await this.eventRepository.save(event);
-    const keys =await this.redisClient.keys( 'events:*');
-    if(keys.length > 0) {
+    const keys = await this.redisClient.keys('events:*');
+    if (keys.length > 0) {
       await this.redisClient.del(keys);
     }
     return event;
@@ -120,7 +119,7 @@ export class EventService {
    * @returns A list of events based on the provided criteria.
    */
   async getEvents(
-    userId:JwtUser,
+    userId: JwtUser,
     filter?: FilterType,
     page?: string,
     limit?: string,
@@ -158,7 +157,11 @@ export class EventService {
 
     const [data, total] = await query.getManyAndCount();
 
-    await this.redisClient.setex(cacheKey, 3600, JSON.stringify({ total, page: pageNum, limit: limitNum, data }));
+    await this.redisClient.setex(
+      cacheKey,
+      3600,
+      JSON.stringify({ total, page: pageNum, limit: limitNum, data }),
+    );
 
     return { total, page: pageNum, limit: limitNum, data };
   }

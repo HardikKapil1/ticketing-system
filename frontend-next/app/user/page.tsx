@@ -165,16 +165,11 @@ const UserDashboard = () => {
 
             <div className="mt-4 space-y-3">
               {tickets.length === 0 && (
-                <p className="empty-state">
-                  You do not have any bookings yet.
-                </p>
+                <p className="empty-state">You do not have any bookings yet.</p>
               )}
 
               {tickets.map((ticket) => (
-                <article
-                  key={ticket.id}
-                  className="data-card"
-                >
+                <article key={ticket.id} className="data-card">
                   <p className="text-sm text-[var(--text-secondary)]">
                     Event ID:{" "}
                     <span className="font-semibold text-[var(--text-primary)]">
