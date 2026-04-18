@@ -31,7 +31,7 @@ async function bootstrap() {
       persistAuthorization: true,
     },
   });
-  await app.listen(3000);
+await app.listen(process.env.PORT || 3000);
 }
 bootstrap().catch((err) => {
   console.error('Failed to start application:', err);

@@ -20,7 +20,7 @@ import { ThrottlerGuard } from '@nestjs/throttler/dist/throttler.guard';
   imports: [
     ThrottlerModule.forRoot([{
       ttl: 60000,  // 1 minute
-      limit: 10,   // 10 requests per minute
+      limit: 1000,   // 1000 requests per minute
     }]),
     ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env'] }),
     TypeOrmModule.forRoot({
@@ -31,7 +31,7 @@ import { ThrottlerGuard } from '@nestjs/throttler/dist/throttler.guard';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     }),
     EventModule,
     UserModule,
